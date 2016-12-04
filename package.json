@@ -1,0 +1,28 @@
+{
+  "name": "reactWeatherApp",
+  "version": "1.0.0",
+  "engines": {
+    "node": "7.0.0"
+  },
+  "main": "app.js",
+  "author": "Daniel Deutsch",
+  "license": "ISC",
+  "jshintConfig": {
+    "node": true,
+    "esversion": 6,
+    "esnext": true
+  },
+  "devDependencies": {
+    "react-scripts": "0.8.1"
+  },
+  "dependencies": {
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
