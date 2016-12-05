@@ -1,6 +1,7 @@
 import React, { Component } from 'react';//load the react component module
 import logo from './logo.svg';//import the logo
 import './App.css';//load the app.css module
+import xhr from 'xhr';
 
 class App extends Component {
   state = {
@@ -8,7 +9,18 @@ class App extends Component {
   };
   fetchData = (evt) => {
     evt.preventDefault();
-    console.log('fetch data for ', this.state.location);
+    const location = encodeURIComponent(this.state.location);
+    //const urlPrefix = '';
+    //const urlSuffix = '';
+    const url = `http://api.openweathermap.org/data/2.5/forecast?q=${location}&APPID=d883d9e37b80e2e5aca55aca4e71e0be&units=metric`;
+    var self = this;//bind this to a variable since we want a reference to the function and not the component
+    xhr({
+      url: url
+    }, function(err,data){
+      self.setState({
+        data: JSON.parse(data.body)//parse the string into an object
+      })//save the data to the render state
+    });
   };//create a fetchData function
   changeLocation = (evt) => {
     this.setState({
