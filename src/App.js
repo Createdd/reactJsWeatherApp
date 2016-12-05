@@ -5,14 +5,16 @@ import xhr from 'xhr';
 
 class App extends Component {
   state = {
-    location: 'Vienna, Austria'
+    location: 'Vienna, Austria',
+    data: 'empty'
   };
+
   fetchData = (evt) => {
     evt.preventDefault();
-    const location = encodeURIComponent(this.state.location);
+    var location = encodeURIComponent(this.state.location);
     //const urlPrefix = '';
     //const urlSuffix = '';
-    const url = `http://api.openweathermap.org/data/2.5/forecast?q=${location}&APPID=d883d9e37b80e2e5aca55aca4e71e0be&units=metric`;
+    var url = `http://api.openweathermap.org/data/2.5/forecast?q=${location}&APPID=d883d9e37b80e2e5aca55aca4e71e0be&units=metric`;
     var self = this;//bind this to a variable since we want a reference to the function and not the component
     xhr({
       url: url
@@ -20,7 +22,8 @@ class App extends Component {
       self.setState({
         data: JSON.parse(data.body)//parse the string into an object
       })//save the data to the render state
-    });
+      console.warn(data);
+    });//xhr
   };//create a fetchData function
   changeLocation = (evt) => {
     this.setState({
@@ -28,6 +31,11 @@ class App extends Component {
     });
   };
   render() {
+    var currentTemp = 'Not loaded yet';
+    if (this.state.data.list) {
+      currentTemp = this.state.data.list[0].main.temp;
+    }
+    console.log(this.state.data)
     return (
       <div className="App">
         <div className="App-header">
@@ -46,6 +54,10 @@ class App extends Component {
               />
             </label>
           </form>
+          <p className="temp-wrapper">
+            <span className="temp">{currentTemp}</span>
+            <span className="temp-symbol">°C</span>
+          </p>
         </div>
       </div>
     );
