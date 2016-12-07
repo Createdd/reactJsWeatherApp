@@ -6,7 +6,7 @@ import xhr from 'xhr';
 class App extends Component {
   state = {
     location: 'Vienna, Austria',
-    data: 'empty'
+    data: ''
   };
 
   fetchData = (evt) => {
