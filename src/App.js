@@ -2,11 +2,14 @@ import React, { Component } from 'react';//load the react component module
 import logo from './logo.svg';//import the logo
 import './App.css';//load the app.css module
 import xhr from 'xhr';
+import Plot from './Plot.jsx';
 
 class App extends Component {
   state = {
     location: 'Vienna, Austria',
-    data: ''
+    data: {},
+    dates: [],
+    temps: []
   };
 
   fetchData = (evt) => {
@@ -18,13 +21,24 @@ class App extends Component {
     var self = this;//bind this to a variable since we want a reference to the function and not the component
     xhr({
       url: url
-    }, function(err,data){
+    }, function (err, data) {
+      var body = JSON.parse(data.body);//parse the string into an object
+      var list = body.list;
+      var dates = [];
+      var temps = [];
+      for (var i = 0; i < list.length; i++) {
+        dates.push(list[i].dt_txt);
+        temps.push(list[i].main.temp);
+      }
       self.setState({
-        data: JSON.parse(data.body)//parse the string into an object
-      })//save the data to the render state
-      console.warn(data);
+        data: body,
+        dates: dates,
+        temps: temps
+      });//set the state to the body data and dates and temperatures
     });//xhr
   };//create a fetchData function
+
+
   changeLocation = (evt) => {
     this.setState({
       location: evt.target.value
@@ -54,10 +68,24 @@ class App extends Component {
               />
             </label>
           </form>
-          <p className="temp-wrapper">
-            <span className="temp">{currentTemp}</span>
-            <span className="temp-symbol">°C</span>
-          </p>
+          {/*
+          Render the current temperature and the forecast if we have data
+          otherwise return null
+        */}
+          {(this.state.data.list) ? (
+         <div className="wrapper">
+           <p className="temp-wrapper">
+             <span className="temp">{ currentTemp }</span>
+             <span className="temp-symbol">°C</span>
+           </p>
+           <h2>Forecast</h2>
+           <Plot
+             xData={this.state.dates}
+             yData={this.state.temps}
+             type="scatter"
+           />
+         </div>
+       ) : null}
         </div>
       </div>
     );
