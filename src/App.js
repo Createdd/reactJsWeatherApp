@@ -1,16 +1,13 @@
 import React, { Component } from 'react';//load the react component module
 import logo from './logo.svg';//import the logo
 import './App.css';//load the app.css module
-import xhr from 'xhr';
 import Plot from './Plot.jsx';
 import { connect } from 'react-redux';
 import {
   changeLocation,
-  setData,
-  setDates,
-  setTemps,
   setSelectedDate,
-  setSelectedTemp
+  setSelectedTemp,
+  fetchData
 } from './action';
 
 class App extends Component {
@@ -18,25 +15,7 @@ class App extends Component {
     evt.preventDefault();
     var location = encodeURIComponent(this.props.location);
     var url = `http://api.openweathermap.org/data/2.5/forecast?q=${location}&APPID=d883d9e37b80e2e5aca55aca4e71e0be&units=metric`;
-    var self = this;//bind this to a variable since we want a reference to the function and not the component
-    xhr({
-      url: url
-    }, function (err, data) {
-      var body = JSON.parse(data.body);//parse the string into an object
-      var list = body.list;
-      var dates = [];
-      var temps = [];
-      for (var i = 0; i < list.length; i++) {
-        dates.push(list[i].dt_txt);
-        temps.push(list[i].main.temp);
-      }
-
-     self.props.dispatch(setData(body));
-     self.props.dispatch(setDates(dates));
-     self.props.dispatch(setTemps(temps));
-     self.props.dispatch(setSelectedDate(''));
-     self.props.dispatch(setSelectedTemp(null));
-    });//xhr
+    this.props.dispatch(fetchData(url));
   };//create a fetchData function
   onPlotClick = (data) => {
     if (data.points) {
@@ -50,8 +29,8 @@ class App extends Component {
   };
   render() {
     var currentTemp = 'Not loaded yet';
-    if (this.state.data.list) {
-      currentTemp = this.state.data.list[0].main.temp;
+    if (this.props.data.list) {
+      currentTemp = this.props.data.list[0].main.temp;
     }
     return (
       <div className="App">
