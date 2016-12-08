@@ -28,6 +28,7 @@ export default function mainReducer(state = initialState, action) {
         date: action.date,
         temp: state.selected.temp
       }
+    });
     default:
       return state;
   }

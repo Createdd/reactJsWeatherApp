@@ -5,7 +5,12 @@ import xhr from 'xhr';
 import Plot from './Plot.jsx';
 import { connect } from 'react-redux';
 import {
-  changeLocation
+  changeLocation,
+  setData,
+  setDates,
+  setTemps,
+  setSelectedDate,
+  setSelectedTemp
 } from './action';
 
 class App extends Component {
@@ -25,26 +30,19 @@ class App extends Component {
         dates.push(list[i].dt_txt);
         temps.push(list[i].main.temp);
       }
-      /* Save the data, and reset the selected time to the default values */
-      self.setState({
-        data: body,
-        dates: dates,
-        temps: temps,
-        selected: {
-          date: '',
-          temp: null
-        }
-      });//set the state to the body data and dates and temperatures
+
+     self.props.dispatch(setData(body));
+     self.props.dispatch(setDates(dates));
+     self.props.dispatch(setTemps(temps));
+     self.props.dispatch(setSelectedDate(''));
+     self.props.dispatch(setSelectedTemp(null));
     });//xhr
   };//create a fetchData function
   onPlotClick = (data) => {
     if (data.points) {
-      this.setState({
-        selected: {
-          date: data.points[0].x,
-          temp: data.points[0].y
-        }
-      });
+      var number = data.points[0].pointNumber;
+      this.props.dispatch(setSelectedDate(data.points[0].x));
+      this.props.dispatch(setSelectedTemp(data.points[0].y));
     }
   };
   changeLocation = (evt) => {
@@ -77,36 +75,32 @@ class App extends Component {
           Render the current temperature and the forecast if we have data
           otherwise return null
         */}
-          {(this.state.data.list) ? (
-            <div className="wrapper">
-               {/* Render the current temperature if no specific date is selected */}
-               <p className="temp-wrapper">
-                 <span className="temp">
-                   { this.state.selected.temp ? this.state.selected.temp : currentTemp }
-                 </span>
-                 <span className="temp-symbol">°C</span>
-                 <span className="temp-date">
-                   { this.state.selected.temp ? this.state.selected.date : ''}
-                 </span>
-               </p>
-               <h2>Forecast</h2>
-             <Plot
-                xData={this.state.dates}
-                yData={this.state.temps}
-                onPlotClick={this.onPlotClick}
-                type="scatter"
-              />
-         </div>
-       ) : null}
+        {(this.props.data.list) ? (
+          <div>
+            {/* Render the current temperature if no specific date is selected */}
+            {(this.props.selected.temp) ? (
+              <p>The temperature on { this.props.selected.date } will be { this.props.selected.temp }°C</p>
+            ) : (
+              <p>The current temperature is { currentTemp }°C!</p>
+            )}
+            <h2>Forecast</h2>
+            <Plot
+              xData={this.props.dates}
+              yData={this.props.temps}
+              onPlotClick={this.onPlotClick}
+              type="scatter"
+            />
+          </div>
+        ) : null}
         </div>
       </div>
     );
   }
 }
-function mapStateToProps (state) {
-  return {
-    location: state.location
-  };
+
+// Since we want to have the entire state anyway, we can simply return it as is!
+function mapStateToProps(state) {
+  return state;
 }
 
-export default connect(mapStateToProps)(App);//export the component 'app'
+export default connect(mapStateToProps)(App);
