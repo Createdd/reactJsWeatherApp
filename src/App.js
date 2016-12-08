@@ -1,5 +1,4 @@
-import React, { Component } from 'react';//load the react component module
-import logo from './logo.svg';//import the logo
+import React from 'react';
 import './App.css';//load the app.css module
 import Plot from './Plot.jsx';
 import { connect } from 'react-redux';
@@ -10,7 +9,7 @@ import {
   fetchData
 } from './action';
 
-class App extends Component {
+class App extends React.Component {
   fetchData = (evt) => {
     evt.preventDefault();
     var location = encodeURIComponent(this.props.location);

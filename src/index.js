@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
 import App from './App.js';//import the app component
-import mainReducer from './reducer';
 import './index.css';
+
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
+import { Provider } from 'react-redux';
+import mainReducer from './reducer';
+
 
 var store = createStore(
   mainReducer,
