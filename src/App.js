@@ -28,50 +28,49 @@ class App extends Component {
     this.props.dispatch(changeLocation(evt.target.value));
   };
   render() {
-    var currentTemp = 'Not loaded yet';
-    if (this.props.data.list) {
-      currentTemp = this.props.data.list[0].main.temp;
+    var currentTemp = 'not loaded yet';
+    if (this.props.redux.getIn(['data', 'list'])) {
+      currentTemp = this.props.redux.getIn(['data', 'list', '0', 'main', 'temp']);
     }
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <div>
-          <h1>Weather</h1>
-          <form onSubmit={this.fetchData}>
-            <label>I want to know the weather for
-              <input
-                placeholder={"City, Country"}
-                type="text"
-                value={this.props.location}
-                onChange={this.changeLocation}
-              />
-            </label>
-          </form>
-          {/*
+      <div>
+        <h1>Weather</h1>
+        <form onSubmit={this.fetchData}>
+          <label>I want to know the weather for
+            <input
+              placeholder={"City, Country"}
+              type="text"
+              value={this.props.redux.get('location')}
+              onChange={this.changeLocation}
+            />
+          </label>
+        </form>
+        {/*
           Render the current temperature and the forecast if we have data
           otherwise return null
         */}
-        {(this.props.data.list) ? (
-          <div>
+        {(this.props.redux.getIn(['data', 'list'])) ? (
+          <div className="wrapper">
             {/* Render the current temperature if no specific date is selected */}
-            {(this.props.selected.temp) ? (
-              <p>The temperature on { this.props.selected.date } will be { this.props.selected.temp }°C</p>
-            ) : (
-              <p>The current temperature is { currentTemp }°C!</p>
-            )}
+            <p className="temp-wrapper">
+              <span className="temp">
+                { this.props.redux.getIn(['selected', 'temp']) ? this.props.redux.getIn(['selected', 'temp']) : currentTemp }
+              </span>
+              <span className="temp-symbol">°C</span>
+              <span className="temp-date">
+                { this.props.redux.getIn(['selected', 'temp']) ? this.props.redux.getIn(['selected', 'date']) : ''}
+              </span>
+            </p>
             <h2>Forecast</h2>
             <Plot
-              xData={this.props.dates}
-              yData={this.props.temps}
+              xData={this.props.redux.get('dates')}
+              yData={this.props.redux.get('temps')}
               onPlotClick={this.onPlotClick}
               type="scatter"
             />
           </div>
         ) : null}
-        </div>
+
       </div>
     );
   }
