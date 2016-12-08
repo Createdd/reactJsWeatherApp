@@ -6,7 +6,7 @@ import Plot from './Plot.jsx';
 
 class App extends Component {
   state = {
-    location: 'Vienna, Austria',
+    location: '',
     data: {},
     dates: [],
     temps: [],
@@ -46,8 +46,6 @@ class App extends Component {
       });//set the state to the body data and dates and temperatures
     });//xhr
   };//create a fetchData function
-
-
   changeLocation = (evt) => {
     this.setState({
       location: evt.target.value
