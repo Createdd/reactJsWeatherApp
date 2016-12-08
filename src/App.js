@@ -9,23 +9,30 @@ import {
   fetchData
 } from './action';
 
-class App extends React.Component {
+export class App extends React.Component {
   fetchData = (evt) => {
     evt.preventDefault();
-    var location = encodeURIComponent(this.props.location);
-    var url = `http://api.openweathermap.org/data/2.5/forecast?q=${location}&APPID=d883d9e37b80e2e5aca55aca4e71e0be&units=metric`;
+
+    var location = encodeURIComponent(this.props.redux.get('location'));
+
+    var urlPrefix = 'http://api.openweathermap.org/data/2.5/forecast?q=';
+    var urlSuffix = '&APPID=dbe69e56e7ee5f981d76c3e77bbb45c0&units=metric';
+    var url = urlPrefix + location + urlSuffix;
+
     this.props.dispatch(fetchData(url));
-  }
+  };
+
   onPlotClick = (data) => {
     if (data.points) {
-      var number = data.points[0].pointNumber;
       this.props.dispatch(setSelectedDate(data.points[0].x));
-      this.props.dispatch(setSelectedTemp(data.points[0].y));
+      this.props.dispatch(setSelectedTemp(data.points[0].y))
     }
-  }
+  };
+
   changeLocation = (evt) => {
     this.props.dispatch(changeLocation(evt.target.value));
-  }
+  };
+
   render() {
     var currentTemp = 'not loaded yet';
     if (this.props.redux.getIn(['data', 'list'])) {
@@ -77,7 +84,9 @@ class App extends React.Component {
 
 // Since we want to have the entire state anyway, we can simply return it as is!
 function mapStateToProps(state) {
-  return state.toJS();
+  return {
+    redux: state
+  };
 }
 
 export default connect(mapStateToProps)(App);
