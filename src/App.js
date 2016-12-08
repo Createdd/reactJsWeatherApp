@@ -16,6 +16,24 @@ class App extends Component {
     }
   };
 
+  function changeLocation(location){
+    return{
+      type: 'CHANGE_LOACTION',
+      location: location
+    };
+  }
+
+  function mainReducer(state, action){
+    switch (action.type){
+      case 'CHANGE_LOACTION':
+        return Object.assign({}, state,{
+          location: action.location
+        });
+      default:
+        return state;
+    };
+  }
+
   fetchData = (evt) => {
     evt.preventDefault();
     var location = encodeURIComponent(this.state.location);
@@ -47,8 +65,7 @@ class App extends Component {
     });//xhr
   };//create a fetchData function
   changeLocation = (evt) => {
-    this.setState({
-      location: evt.target.value
+    this.props.dispatch(changeLocation(evt.target.value));
     });
   };
   onPlotClick = (data) => {
