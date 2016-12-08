@@ -3,42 +3,15 @@ import logo from './logo.svg';//import the logo
 import './App.css';//load the app.css module
 import xhr from 'xhr';
 import Plot from './Plot.jsx';
+import { connect } from 'react-redux';
+import {
+  changeLocation
+} from './action';
 
 class App extends Component {
-  state = {
-    location: '',
-    data: {},
-    dates: [],
-    temps: [],
-    selected: {
-      date: '',
-      temp: null
-    }
-  };
-
-  function changeLocation(location){
-    return{
-      type: 'CHANGE_LOACTION',
-      location: location
-    };
-  }
-
-  function mainReducer(state, action){
-    switch (action.type){
-      case 'CHANGE_LOACTION':
-        return Object.assign({}, state,{
-          location: action.location
-        });
-      default:
-        return state;
-    };
-  }
-
   fetchData = (evt) => {
     evt.preventDefault();
-    var location = encodeURIComponent(this.state.location);
-    //const urlPrefix = '';
-    //const urlSuffix = '';
+    var location = encodeURIComponent(this.props.location);
     var url = `http://api.openweathermap.org/data/2.5/forecast?q=${location}&APPID=d883d9e37b80e2e5aca55aca4e71e0be&units=metric`;
     var self = this;//bind this to a variable since we want a reference to the function and not the component
     xhr({
@@ -64,10 +37,6 @@ class App extends Component {
       });//set the state to the body data and dates and temperatures
     });//xhr
   };//create a fetchData function
-  changeLocation = (evt) => {
-    this.props.dispatch(changeLocation(evt.target.value));
-    });
-  };
   onPlotClick = (data) => {
     if (data.points) {
       this.setState({
@@ -78,12 +47,14 @@ class App extends Component {
       });
     }
   };
+  changeLocation = (evt) => {
+    this.props.dispatch(changeLocation(evt.target.value));
+  };
   render() {
     var currentTemp = 'Not loaded yet';
     if (this.state.data.list) {
       currentTemp = this.state.data.list[0].main.temp;
     }
-    console.log(this.state.data)
     return (
       <div className="App">
         <div className="App-header">
@@ -95,9 +66,9 @@ class App extends Component {
           <form onSubmit={this.fetchData}>
             <label>I want to know the weather for
               <input
-                placeholder={'City, Country'}
-                type='text'
-                value={this.state.location}
+                placeholder={"City, Country"}
+                type="text"
+                value={this.props.location}
                 onChange={this.changeLocation}
               />
             </label>
@@ -132,5 +103,10 @@ class App extends Component {
     );
   }
 }
+function mapStateToProps (state) {
+  return {
+    location: state.location
+  };
+}
 
-export default App;//export the component 'app'
+export default connect(mapStateToProps)(App);//export the component 'app'
