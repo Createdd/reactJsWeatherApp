@@ -79,7 +79,7 @@ class App extends Component {
 
 // Since we want to have the entire state anyway, we can simply return it as is!
 function mapStateToProps(state) {
-  return state;
+  return state.toJS();
 }
 
 export default connect(mapStateToProps)(App);
