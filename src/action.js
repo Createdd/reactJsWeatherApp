@@ -18,6 +18,24 @@ export function setSelectedTemp(temp) {
     temp: temp
   };
 }
+export function setData(data) {
+  return {
+    type: 'SET_DATA',
+    data: data
+  };
+}
+export function setDates(dates) {
+  return {
+    type: 'SET_DATES',
+    dates: dates
+  };
+}
+export function setTemps(temps) {
+  return {
+    type: 'SET_TEMPS',
+    temps: temps
+  };
+}
 // PASS URL IN HERE
 export function fetchData(url) {
   return function thunk(dispatch) {

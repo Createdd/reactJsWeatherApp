@@ -16,17 +16,17 @@ class App extends Component {
     var location = encodeURIComponent(this.props.location);
     var url = `http://api.openweathermap.org/data/2.5/forecast?q=${location}&APPID=d883d9e37b80e2e5aca55aca4e71e0be&units=metric`;
     this.props.dispatch(fetchData(url));
-  };//create a fetchData function
+  }
   onPlotClick = (data) => {
     if (data.points) {
       var number = data.points[0].pointNumber;
       this.props.dispatch(setSelectedDate(data.points[0].x));
       this.props.dispatch(setSelectedTemp(data.points[0].y));
     }
-  };
+  }
   changeLocation = (evt) => {
     this.props.dispatch(changeLocation(evt.target.value));
-  };
+  }
   render() {
     var currentTemp = 'not loaded yet';
     if (this.props.redux.getIn(['data', 'list'])) {
