@@ -13,7 +13,8 @@
     "esnext": true
   },
   "devDependencies": {
-    "react-scripts": "0.8.1"
+    "react-scripts": "0.8.1",
+    "react-test-renderer": "^15.4.1"
   },
   "dependencies": {
     "immutable": "^3.8.1",
